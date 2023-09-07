@@ -5,31 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPA Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-    </style>
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -43,15 +18,11 @@
             <label for="start_year">入学年度：</label>
             <input type="number" id="start_year" name="start_year" required>
         </div>
-
-        <div style="margin-top: 20px;">
+        <div>
             <label for="input_text">成績データ：</label>
-            <textarea id="input_text" name="input_text" rows="10" style="width: 100%;" required></textarea>
+            <textarea id="input_text" name="input_text" rows="6" required></textarea>
         </div>
-
-        <div style="margin-top: 20px;">
-            <button type="submit">計算する</button>
-        </div>
+        <button type="submit">計算する</button>
     </form>
 
     <div id="result" style="display: none;">
@@ -71,7 +42,7 @@
         </table>
     </div>
 </div>
-
+    
 <script>
     const GRADE_MAP = {
         'ＡＡ': 4.0,
