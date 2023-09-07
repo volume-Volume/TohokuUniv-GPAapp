@@ -54,3 +54,19 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 15px 0;
+        padding: 15px;
+    }
+    
+    input, textarea, button {
+        margin-top: 15px;
+    }
+}
