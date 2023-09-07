@@ -1,22 +1,22 @@
 body {
     font-family: Arial, sans-serif;
-    padding: 20px;
+    padding: 0;
+    margin: 0;
     background-color: #f4f4f4;
 }
 
 .container {
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 25px;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+    max-width: 95%; /* サイトの幅を90%にして左右の余白を増やす */
+    margin: 2% auto; /* 上下のマージンを追加 */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #fff;
 }
 
 table {
     width: 100%;
-    margin-top: 25px;
     border-collapse: collapse;
 }
 
@@ -29,26 +29,30 @@ th, td {
     text-align: left;
 }
 
-input, textarea, button {
+input, textarea {
     width: 100%;
-    margin-top: 20px;
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    transition: all 0.3s;
+    box-sizing: border-box; /* パディングを含めた全体のサイズを固定する */
+    transition: border 0.3s;
 }
 
 input:focus, textarea:focus {
     border-color: #007BFF;
     outline: none;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
 
 button {
+    display: block;
+    width: 100%;
     background-color: #007BFF;
     color: #fff;
+    padding: 10px 20px;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
@@ -61,7 +65,6 @@ button:hover {
     }
 
     .container {
-        max-width: 100%;
         margin: 15px 0;
         padding: 15px;
     }
