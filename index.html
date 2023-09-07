@@ -81,8 +81,9 @@
     };
 
     function semester_number(year, term, start_year) {
-        return (year - start_year) * 2 + (term.includes("前期") ? 1 : 2);
+        return (year - start_year) * 2 + (term.startsWith("前期") ? 1 : 2);
     }
+
 
     document.getElementById('gpaForm').addEventListener('submit', function(event) {
         event.preventDefault();
