@@ -80,10 +80,10 @@
         'Ｄ': 0.0
     };
 
-    function semester_number(year, term, start_year) {
-        return (year - start_year) * 2 + (term.startsWith("前期") ? 1 : 2);
+    function semester_name(year, term, start_year) {
+        const semesterNum = (year - start_year) * 2 + (term.startsWith("前期") ? 1 : 2);
+        return semesterNum + "セメ";
     }
-
 
     document.getElementById('gpaForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -95,13 +95,13 @@
         const semester_data = {};
 
         lines.forEach(line => {
-            const semester_match = line.match(/(\d{4})\s+(前期|前期前半|前期後半|前期集中|後期|後期前半|後期後半|後期集中|通年集中)/);
+            const semester_match = line.match(/(\d{4})\s+(前期|後期)/);
             const grade_match = line.match(/(\d)\s+(ＡＡ|Ａ|Ｂ|Ｃ|Ｄ)/);
 
             if (semester_match && grade_match) {
                 const year = parseInt(semester_match[1]);
                 const term = semester_match[2];
-                const current_semester = semester_number(year, term, start_year);
+                const current_semester = semester_name(year, term, start_year);
 
                 if (!semester_data[current_semester]) {
                     semester_data[current_semester] = { total_units: 0, total_score: 0.0 };
@@ -140,7 +140,6 @@
 
         document.getElementById('result').style.display = 'block';
     });
-
 </script>
 
 </body>
