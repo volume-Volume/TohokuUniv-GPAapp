@@ -1,55 +1,144 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPA Calculator</title>
     <style>
-        /* ... (スタイルは変わらず) ... */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="container">
     <h2>GPA Calculator</h2>
 
     <form id="gpaForm">
-        <!-- ... (フォーム部分は変わらず) ... -->
+        <div>
+            <label for="start_year">入学年度：</label>
+            <input type="number" id="start_year" name="start_year" required>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label for="input_text">成績データ：</label>
+            <textarea id="input_text" name="input_text" rows="10" style="width: 100%;" required></textarea>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button type="submit">計算する</button>
+        </div>
     </form>
 
     <div id="result" style="display: none;">
-        <!-- ... (結果表示部分は変わらず) ... -->
+        <hr>
+        <h3>計算結果</h3>
+        <p id="overall_gpa"></p>
+        <h4>セメスター別のGPA</h4>
+        <table id="semester_table">
+            <thead>
+            <tr>
+                <th>セメスター</th>
+                <th>GPA</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
 </div>
 
 <script>
-const GRADE_MAP = {
-    'ＡＡ': 4.0,
-    'Ａ': 3.0,
-    'Ｂ': 2.0,
-    'Ｃ': 1.0,
-    'Ｄ': 0.0
-};
+    const GRADE_MAP = {
+        'ＡＡ': 4.0,
+        'Ａ': 3.0,
+        'Ｂ': 2.0,
+        'Ｃ': 1.0,
+        'Ｄ': 0.0
+    };
 
-function semester_number(year, term, start_year) {
-    return (year - start_year) * 2 + (1 if term in ["前期", "前期集中", "前期前半", "前期後半", "通年集中"] else 2);
-}
+    function semester_number(year, term, start_year) {
+        return (year - start_year) * 2 + (term.includes("前期") ? 1 : 2);
+    }
 
-document.getElementById('gpaForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    document.getElementById('gpaForm').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-    const input_text = document.getElementById('input_text').value;
-    const lines = input_text.split("\n");
-    const start_year = parseInt(document.getElementById('start_year').value);
+        const input_text = document.getElementById('input_text').value;
+        const lines = input_text.split("\n");
+        const start_year = parseInt(document.getElementById('start_year').value);
 
-    const semester_data = {};
-    // ... GPA 計算ロジック ...
+        const semester_data = {};
 
-    // DOM に結果を表示するロジック
-    const resultDiv = document.getElementById('result');
-    resultDiv.style.display = 'block';
-    // 他の結果表示ロジック ...
-});
+        lines.forEach(line => {
+            const semester_match = line.match(/(\d{4})\s+(前期|前期前半|前期後半|前期集中|後期|後期前半|後期後半|後期集中|通年集中)/);
+            const grade_match = line.match(/(\d)\s+(ＡＡ|Ａ|Ｂ|Ｃ|Ｄ)/);
+
+            if (semester_match && grade_match) {
+                const year = parseInt(semester_match[1]);
+                const term = semester_match[2];
+                const current_semester = semester_number(year, term, start_year);
+
+                if (!semester_data[current_semester]) {
+                    semester_data[current_semester] = { total_units: 0, total_score: 0.0 };
+                }
+
+                const units = parseInt(grade_match[1]);
+                const grade = grade_match[2];
+
+                semester_data[current_semester].total_units += units;
+                semester_data[current_semester].total_score += GRADE_MAP[grade] * units;
+            }
+        });
+
+        let overall_units = 0;
+        let overall_score = 0.0;
+
+        Object.values(semester_data).forEach(data => {
+            overall_units += data.total_units;
+            overall_score += data.total_score;
+        });
+
+        const overall_gpa = overall_units ? (overall_score / overall_units).toFixed(2) : 'N/A';
+        document.getElementById('overall_gpa').textContent = "全体のGPA：" + overall_gpa;
+
+        const tbody = document.getElementById('semester_table').querySelector('tbody');
+        tbody.innerHTML = '';
+
+        Object.entries(semester_data).forEach(([semester, data]) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${semester}</td>
+                <td>${data.total_units ? (data.total_score / data.total_units).toFixed(2) : 'N/A'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('result').style.display = 'block';
+    });
 
 </script>
 
