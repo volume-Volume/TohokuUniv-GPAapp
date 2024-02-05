@@ -52,6 +52,14 @@
         'Ｄ': 0.0
     };
 
+    function convertScoreToGrade(score) {
+    if (score >= 90) return 'ＡＡ';
+    if (score >= 80) return 'Ａ';
+    if (score >= 70) return 'Ｂ';
+    if (score >= 60) return 'Ｃ';
+    return 'Ｄ';
+    };
+
     function semester_name(year, term, start_year) {
         let semesterOffset = term.startsWith("前期") ? 1 : 2;
         if (term === "通年") semesterOffset = 2; // 通年集中の授業は後期として扱う
@@ -60,36 +68,41 @@
     }
 
     document.getElementById('gpaForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        const input_text = document.getElementById('input_text').value;
-        const lines = input_text.split("\n");
-        const start_year = parseInt(document.getElementById('start_year').value);
+    const input_text = document.getElementById('input_text').value;
+    const lines = input_text.split("\n");
+    const start_year = parseInt(document.getElementById('start_year').value);
 
-        const semester_data = {};
+    const semester_data = {};
 
-        lines.forEach(line => {
-            const semester_match = line.match(/(\d{4})\s+(前期|後期|通年)/); // 通年を含めるように正規表現を更新
-            const grade_match = line.match(/(\d)\s+(ＡＡ|Ａ|Ｂ|Ｃ|Ｄ)/);
+    lines.forEach(line => {
+        const semester_match = line.match(/(\d{4})\s+(前期|後期|通年)/);
+        let grade_match = line.match(/(\d+)\s+([ＡＡＡＢＣＤ]|[0-9]+)/); // 数値成績も受け付けるように正規表現を更新
 
-            if (semester_match && grade_match) {
-                const year = parseInt(semester_match[1]);
-                const term = semester_match[2];
-                const current_semester = semester_name(year, term, start_year);
+        if (semester_match && grade_match) {
+            const year = parseInt(semester_match[1]);
+            const term = semester_match[2];
+            const current_semester = semester_name(year, term, start_year);
 
-                if (!semester_data[current_semester]) {
-                    semester_data[current_semester] = { total_units: 0, total_score: 0.0 };
-                }
-
-                const units = parseInt(grade_match[1]);
-                const grade = grade_match[2];
-
-                semester_data[current_semester].total_units += units;
-                semester_data[current_semester].total_score += GRADE_MAP[grade] * units;
+            if (!semester_data[current_semester]) {
+                semester_data[current_semester] = { total_units: 0, total_score: 0.0 };
             }
-        });
 
-        let overall_units = 0;
+            const units = parseInt(grade_match[1]);
+            let grade = grade_match[2];
+
+            // 数値成績をアルファベットに変換
+            if (!isNaN(grade)) { // 数値の場合
+                grade = convertScoreToGrade(parseInt(grade));
+            }
+
+            semester_data[current_semester].total_units += units;
+            semester_data[current_semester].total_score += GRADE_MAP[grade] * units;
+        }
+    });
+
+    let overall_units = 0;
         let overall_score = 0.0;
 
         Object.values(semester_data).forEach(data => {
@@ -114,6 +127,9 @@
 
         document.getElementById('result').style.display = 'block';
     });
+});
+
+    
 </script>
 
 </body>
