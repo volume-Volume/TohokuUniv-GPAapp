@@ -53,7 +53,9 @@
     };
 
     function semester_name(year, term, start_year) {
-        const semesterNum = (year - start_year) * 2 + (term.startsWith("前期") ? 1 : 2);
+        let semesterOffset = term.startsWith("前期") ? 1 : 2;
+        if (term === "通年") semesterOffset = 2; // 通年集中の授業は後期として扱う
+        const semesterNum = (year - start_year) * 2 + semesterOffset;
         return semesterNum + "セメ";
     }
 
@@ -67,7 +69,7 @@
         const semester_data = {};
 
         lines.forEach(line => {
-            const semester_match = line.match(/(\d{4})\s+(前期|後期)/);
+            const semester_match = line.match(/(\d{4})\s+(前期|後期|通年)/); // 通年を含めるように正規表現を更新
             const grade_match = line.match(/(\d)\s+(ＡＡ|Ａ|Ｂ|Ｃ|Ｄ)/);
 
             if (semester_match && grade_match) {
