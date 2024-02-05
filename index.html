@@ -97,7 +97,7 @@
             overall_score += data.total_score;
         });
 
-        const overall_gpa = overall_units ? (overall_score / overall_units).toFixed(2) : 'N/A';
+        const overall_gpa = overall_units ? (overall_score / overall_units).toFixed(4) : 'N/A';
         document.getElementById('overall_gpa').textContent = "全体のGPA：" + overall_gpa;
 
         const tbody = document.getElementById('semester_table').querySelector('tbody');
@@ -107,7 +107,7 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${semester}</td>
-                <td>${data.total_units ? (data.total_score / data.total_units).toFixed(2) : 'N/A'}</td>
+                <td>${data.total_units ? (data.total_score / data.total_units).toFixed(4) : 'N/A'}</td>
             `;
             tbody.appendChild(tr);
         });
